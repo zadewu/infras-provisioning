@@ -1,7 +1,7 @@
 ---
 services:
   traefik:
-    image: docker.io/library/traefik:2.11.1
+    image: docker.io/library/traefik:v3.0
     container_name: traefik
     ports:
       - 80:80
@@ -14,30 +14,44 @@ services:
       - ./config/conf/:/etc/traefik/conf/
       - ./config/certs/:/etc/traefik/certs/
     environment:
-      - CF_DNS_API_TOKEN=-EVftOVd0UB2IdE4SPCLKNGmI9P0N1YtiCLHaIQK
-    networks:
-      - proxy
-    restart: unless-stopped
-
-  nginxError:
-    image: nginx:latest
-    container_name: nginxError
-    restart: unless-stopped
-    volumes:
-      - ./error-pages/html/:/usr/share/nginx/error-pages
-      - ./error-pages/nginx-error-pages.conf:/etc/nginx/conf.d/default.conf
+      - CF_DNS_API_TOKEN=
     networks:
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.error-router.rule=HostRegexp(`{host:.+}`)"
-      - "traefik.http.routers.error-router.priority=1"
-      - "traefik.http.routers.error-router.entrypoints=web"
-      - "traefik.http.routers.error-router.middlewares=error-pages-middleware"
-      - "traefik.http.middlewares.error-pages-middleware.errors.status=400-599"
-      - "traefik.http.middlewares.error-pages-middleware.errors.service=error-pages-service"
-      - "traefik.http.middlewares.error-pages-middleware.errors.query=/{status}.html"
-      - "traefik.http.services.error-pages-service.loadbalancer.server.port=80"
+      - "traefik.http.routers.traefik_http.rule=Host(`traefik.zadinfra.com`)"
+      - "traefik.http.routers.traefik_http.entrypoints=web"
+      - "traefik.http.routers.traefik_https.rule=Host(`traefik.zadinfra.com`)"
+      - "traefik.http.routers.traefik_https.entrypoints=websecure"
+      - "traefik.http.routers.traefik_https.service=api@internal"
+      - "traefik.http.routers.traefik_https.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik_https.tls=true"
+      - "traefik.http.routers.traefik_https.tls.certresolver=production"
+      - "traefik.http.routers.traefik_https.tls.domains[0].main=zadinfra.com"
+      - "traefik.http.routers.traefik_https.tls.domains[0].sans=*.zadinfra.com"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=zadewu:$$apr1$$AQdJ10e8$$H8uanFv5ukaYwQkT0c8bk0"
+    restart: unless-stopped
+
+  # nginxError:
+  #   image: nginx:latest
+  #   container_name: nginxError
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./error-pages/html/:/usr/share/nginx/error-pages
+  #     - ./error-pages/nginx-error-pages.conf:/etc/nginx/conf.d/default.conf
+  #   networks:
+  #     - proxy
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.error-router.rule=HostRegexp(`{host:.+}`)"
+  #     - "traefik.http.routers.error-router.priority=10"
+  #     - "traefik.http.routers.error-router.entrypoints=web,websecure"
+  #     - "traefik.http.routers.error-router.middlewares=error-pages-middleware"
+  #     - "traefik.http.middlewares.error-pages-middleware.errors.status=400-599"
+  #     - "traefik.http.middlewares.error-pages-middleware.errors.service=error-pages-service"
+  #     - "traefik.http.middlewares.error-pages-middleware.errors.query=/{status}.html"
+  #     - "traefik.http.services.error-pages-service.loadbalancer.server.port=80"
+
 networks:
   proxy:
     name: proxy
