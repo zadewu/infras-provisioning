@@ -19,6 +19,7 @@ services:
     volumes:
       - ./nginxproxymanager-data:/data
       - ./nginxproxymanager-ssl:/etc/letsencrypt
+      - ./nginxproxymanager-snippets:/snippets
     restart: unless-stopped
     depends_on:
       nginxproxymanager-db:

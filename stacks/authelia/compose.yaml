@@ -1,0 +1,16 @@
+---
+services:
+  authelia:
+    container_name: "authelia"
+    image: authelia/authelia
+    volumes:
+      - ./config:/config
+    networks:
+      - proxy
+    expose:
+      - 9091
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true

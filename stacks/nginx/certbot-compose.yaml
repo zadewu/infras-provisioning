@@ -1,0 +1,17 @@
+---
+services:
+  certbot:
+    image: "certbot/dns-cloudflare:v3.1.0"
+    volumes:
+      - ./letsencrypt_prd:/tmp/etc/letsencrypt:rw
+      - ./cloudflare.ini:/root/cloudflare.ini
+    command: >
+      certonly
+      --dns-cloudflare
+      --dns-cloudflare-credentials /root/cloudflare.ini
+      --non-interactive
+      --agree-tos
+      --email huypb93@gmail.com
+      --force-renewal
+      -d zadinfra.com
+      -d *.zadinfra.com

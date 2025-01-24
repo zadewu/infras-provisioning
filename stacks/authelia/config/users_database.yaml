@@ -1,0 +1,9 @@
+users:
+  huy.phan:
+    disabled: false
+    displayname: "Huy Phan"
+    password: "$argon2id$v=19$m=65536,t=3,p=4$djTJNjzxbnOfNmdvnI4P9g$a4sQVzvijM6LQmxLvnwhocitGsoGnGQwAU3wHy0xepk"
+    email: huypb93@gmail.com
+    groups:
+      - admins
+      - dev
