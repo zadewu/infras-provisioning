@@ -1,0 +1,17 @@
+provider = "oidc"
+redirect_url = "http://localhost:4180/oauth2/callback"
+oidc_issuer_url = "https://id.zadinfra.com"
+upstreams = [
+    "https://httpbin.org"
+]
+email_domains = [
+    "*"
+]
+client_id = "306216158099480579"
+client_secret = "zQYkIR5CfveDQFzgWcD0tmrJJUAuK5qajyejiLHiSB1HrLC46OAjeiPSsUcGPlzK"
+pass_access_token = true
+cookie_secret = "hq4JlWXlFV5Rh950sX4vvyMDk9QVojOV"
+cookie_secure = false
+skip_provider_button = true
+# Note: use the following for testing within a container
+# http_address = "0.0.0.0:4180"
